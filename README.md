@@ -44,11 +44,6 @@ This section of the code sets up the basic structure of the page and links the r
 			canvas {
 				display: block;
 			}
-			#container {
-				background: #000000;
-				width: 100%;
-				height: 100%;
-			}
 		</style>
 	</head>
 	<body>
