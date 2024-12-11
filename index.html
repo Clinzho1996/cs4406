@@ -1,127 +1,107 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<script
-			type="text/javascript"
-			src="https://getfirebug.com/firebug-lite-debug.js"></script>
-		<meta name="description" content="CS4406 Computer Graphics - Exercise #1" />
 		<meta charset="utf-8" />
-		<title>Sample Three.js</title>
+		<title>3D Rotating Object with Textures for Children</title>
+		<meta name="description" content="CS4406 Computer Graphics - Exercise #1" />
 		<style>
 			body {
-				margin: auto;
+				margin: 0;
+				overflow: hidden;
 			}
-			canvas {
-				display: block;
+			#container {
+				width: 100%;
+				height: 100vh;
+				background: #000;
 			}
 		</style>
-		<meta charset="utf-8" />
-		<title>CS4406 Computer Graphics - Exercise #1</title>
-
-		<style id="jsbin-css"></style>
 	</head>
+
 	<body>
 		<div id="container"></div>
+
+		<!-- Load Three.js -->
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+		<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+
+		<script>
+			var WIDTH = window.innerWidth;
+			var HEIGHT = window.innerHeight;
+
+			var VIEW_ANGLE = 45,
+				ASPECT = WIDTH / HEIGHT,
+				NEAR = 1,
+				FAR = 1000;
+
+			var renderer = new THREE.WebGLRenderer();
+			var scene = new THREE.Scene();
+			var camera = new THREE.PerspectiveCamera(VIEW_ANGLE, ASPECT, NEAR, FAR);
+
+			var $container = $("#container");
+			renderer.setSize(WIDTH, HEIGHT);
+			$container.append(renderer.domElement);
+
+			camera.position.z = 200;
+			scene.add(camera);
+
+			var cameraControls = new THREE.OrbitControls(camera, renderer.domElement);
+
+			// Define textures with valid placeholder images
+			const textureLoader = new THREE.TextureLoader();
+
+			const textures = [
+				textureLoader.load(
+					"https://plus.unsplash.com/premium_photo-1675826927352-e99efbab36d8?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+				), // Stars placeholder
+				textureLoader.load(
+					"https://plus.unsplash.com/premium_photo-1675432656807-216d786dd468?q=80&w=1890&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+				), // Animals placeholder
+				textureLoader.load(
+					"https://images.unsplash.com/photo-1515041219749-89347f83291a?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+				), // Cartoon placeholder
+				textureLoader.load(
+					"https://plus.unsplash.com/premium_photo-1723618919526-2e9fdea7862b?q=80&w=1941&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+				), // Fun shapes placeholder
+			];
+
+			const materials = textures.map(
+				(texture) => new THREE.MeshBasicMaterial({ map: texture })
+			);
+
+			const geometry = new THREE.BoxGeometry(100, 100, 100);
+			const cube = new THREE.Mesh(geometry, materials);
+
+			scene.add(cube);
+
+			let rotationSpeed = 0.01;
+
+			function animate() {
+				requestAnimationFrame(animate);
+
+				cube.rotation.y += rotationSpeed; // Continuous rotation
+
+				cameraControls.update();
+				renderer.render(scene, camera);
+			}
+
+			animate();
+
+			// Keyboard controls
+			document.addEventListener("keydown", function (event) {
+				if (event.key === "ArrowLeft") {
+					rotationSpeed = -0.05;
+				}
+				if (event.key === "ArrowRight") {
+					rotationSpeed = 0.05;
+				}
+			});
+
+			document.addEventListener("keyup", function (event) {
+				if (event.key === "ArrowLeft" || event.key === "ArrowRight") {
+					rotationSpeed = 0.01;
+				}
+			});
+		</script>
 	</body>
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js"></script>
-	<!-- Three.js CDN -->
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-	<!-- OrbitControls CDN -->
-	<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
-	<script type="text/javascript">
-		// Scene dimensions
-		const WIDTH = window.innerWidth;
-		const HEIGHT = window.innerHeight;
-
-		// Create the scene
-		const scene = new THREE.Scene();
-
-		// Set up the camera
-		const camera = new THREE.PerspectiveCamera(75, WIDTH / HEIGHT, 0.1, 1000);
-		camera.position.z = 200;
-
-		// Set up the renderer
-		const renderer = new THREE.WebGLRenderer();
-		renderer.setSize(WIDTH, HEIGHT);
-		document.getElementById("container").appendChild(renderer.domElement);
-
-		// ----------------------------------------------------------------------------------------
-		//  YOUR CUSTOM CODE FOR THE ASSIGNMENT STARTS HERE
-		// ----------------------------------------------------------------------------------------
-
-		// Create a sphere geometry for the bouncing object
-		var geometry = new THREE.SphereGeometry(10, 32, 32);
-		var material = new THREE.MeshPhongMaterial({ color: 0xff0000 }); // Initial color red
-		var myMesh = new THREE.Mesh(geometry, material);
-		scene.add(myMesh);
-
-		// Add a light-yellow fixed light source
-		var light = new THREE.PointLight(0xffffaa, 1, 1000);
-		light.position.set(-200, 200, 100); // Upper-left corner
-		scene.add(light);
-
-		// Add ambient light for softer shadows
-		var ambientLight = new THREE.AmbientLight(0x404040);
-		scene.add(ambientLight);
-
-		// Variables for movement
-		var speedX = 2; // X-axis speed
-		var speedY = 2; // Y-axis speed
-		var directionX = 1; // X-axis direction (1 for right, -1 for left)
-		var directionY = 1; // Y-axis direction (1 for up, -1 for down)
-		var bounds = {
-			minX: -WIDTH / 2,
-			maxX: WIDTH / 2,
-			minY: -HEIGHT / 2,
-			maxY: HEIGHT / 2,
-		}; // Scene bounds
-
-		// Function to update position and handle bouncing
-		function updatePosition() {
-			// Update the position
-			myMesh.position.x += speedX * directionX;
-			myMesh.position.y += speedY * directionY;
-
-			// Check for collision with edges and bounce
-			if (
-				myMesh.position.x >= bounds.maxX ||
-				myMesh.position.x <= bounds.minX
-			) {
-				directionX *= -1; // Reverse direction
-				changeColor(); // Change color
-			}
-			if (
-				myMesh.position.y >= bounds.maxY ||
-				myMesh.position.y <= bounds.minY
-			) {
-				directionY *= -1; // Reverse direction
-				changeColor(); // Change color
-			}
-		}
-
-		// Function to change the object's color
-		function changeColor() {
-			var randomColor = Math.floor(Math.random() * 16777215); // Generate random color
-			myMesh.material.color.setHex(randomColor);
-		}
-
-		// Animation loop to handle bouncing and rendering
-		function animate() {
-			requestAnimationFrame(animate);
-			updatePosition(); // Update position
-			render(); // Render the scene
-		}
-
-		// Define the render function
-		function render() {
-			renderer.render(scene, camera);
-		}
-
-		// ----------------------------------------------------------------------------------------
-		// END OF YOUR CUSTOM CODE FOR THE ASSIGNMENT
-		// ----------------------------------------------------------------------------------------
-
-		// Start the animation
-		animate();
-	</script>
 </html>
