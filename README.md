@@ -1,60 +1,36 @@
-# Three.js Pentagon Shape with Rotation
+# 3D Earth and Moon Visualization
 
-## Overview
-
-This project demonstrates how to create a 3D pentagon shape using **Three.js** and animate it by rotating on both the X and Y axes. The shape is rendered with a red material, and users can interact with the 3D scene using the **OrbitControls** to spin, zoom, and pan the camera view.
+This project is a 3D visualization of Earth and the Moon using the [Three.js](https://threejs.org/) library. The visualization includes an animated rotating Earth and an orbiting Moon, complete with textures and lighting to simulate a realistic effect.
 
 ## Features
 
-- Creates a **pentagon shape** using polar coordinates.
-- The pentagon is rendered with a **red material** (modifiable).
-- **Rotation** animation is applied to the pentagon on both the X and Y axes.
-- Users can interact with the scene using **OrbitControls** (zoom, pan, and rotate the view).
-- The scene is rendered with **WebGL** via Three.js.
+- A rotating 3D Earth with realistic textures.
+- A 3D Moon orbiting around the Earth.
+- Point light to simulate day and night.
+- Interactive controls to rotate and zoom the camera using mouse input.
 
-## Prerequisites
+## Technologies Used
 
-Before running the code, make sure your environment supports the following:
+- [Three.js](https://threejs.org/): JavaScript library for 3D graphics.
+- [OrbitControls](https://threejs.org/docs/#examples/en/controls/OrbitControls): For interactive camera movement.
+- HTML, CSS, and JavaScript.
 
-- **A modern web browser** (e.g., Chrome, Firefox, Edge)
-- **Internet connection** for loading external libraries via CDN (Three.js, OrbitControls)
+## Demo
 
-## Installation and Setup
+![Demo GIF](https://placekitten.com/800/400)  
+_Replace this image with an actual demo GIF or screenshot of your visualization._
 
-1. **Clone the repository** (if applicable) or simply copy the code below into a new `.html` file.
-2. Open the file in your web browser.
+## Getting Started
 
-## Usage
+### Prerequisites
 
-### 1. **HTML Structure**
+To run this project locally, you'll need:
 
-This section of the code sets up the basic structure of the page and links the required external libraries:
+- A modern web browser that supports WebGL.
 
-```html
-<!DOCTYPE html>
-<html lang="en">
-	<head>
-		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>Sample Three.js</title>
-		<style>
-			body {
-				margin: 0;
-			}
-			canvas {
-				display: block;
-			}
-		</style>
-	</head>
-	<body>
-		<div id="container"></div>
-		<!-- External Scripts -->
-		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js"></script>
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-		<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
-		<script type="text/javascript">
-			<!-- JS Code Here -->
-		</script>
-	</body>
-</html>
-```
+### Installation
+
+1. Clone this repository:
+   ```bash
+   git clone https://github.com/your-username/3d-earth-visualization.git
+   ```
