@@ -15,11 +15,6 @@ This project is a 3D visualization of Earth and the Moon using the [Three.js](ht
 - [OrbitControls](https://threejs.org/docs/#examples/en/controls/OrbitControls): For interactive camera movement.
 - HTML, CSS, and JavaScript.
 
-## Demo
-
-![Demo GIF](https://placekitten.com/800/400)  
-_Replace this image with an actual demo GIF or screenshot of your visualization._
-
 ## Getting Started
 
 ### Prerequisites
@@ -32,5 +27,5 @@ To run this project locally, you'll need:
 
 1. Clone this repository:
    ```bash
-   git clone https://github.com/your-username/3d-earth-visualization.git
+   git clone https://github.com/Clinzho1996/cs4406.git
    ```
