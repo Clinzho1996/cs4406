@@ -1,115 +1,84 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 	<head>
-		<script
-			type="text/javascript"
-			src="https://getfirebug.com/firebug-lite-debug.js"></script>
-		<meta
-			name="description"
-			content="CS4406 Computer Graphics - Methane Molecule" />
-		<meta charset="utf-8" />
-		<title>3D Earth</title>
-		<style>
-			#container {
-				background: #000000;
-				width: 100%;
-				height: 100%;
-			}
-		</style>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>3D Function Grapher</title>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r142/three.min.js"></script>
 	</head>
 	<body>
-		<div id="container"></div>
+		<div id="container" style="width: 100%; height: 100vh"></div>
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 		<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
-
 		<script>
-			// Set the scene size
-			var WIDTH = 500,
-				HEIGHT = 500;
+			// Function to initialize the scene
+			function init() {
+				const container = document.getElementById("container");
 
-			// Camera attributes
-			var VIEW_ANGLE = 45,
-				ASPECT = WIDTH / HEIGHT,
-				NEAR = 1,
-				FAR = 1000;
-
-			// Get the DOM element to attach to
-			var container = document.getElementById("container");
-
-			// Create a WebGL renderer, camera, and a scene
-			var renderer = new THREE.WebGLRenderer();
-			var scene = new THREE.Scene();
-			var camera = new THREE.PerspectiveCamera(VIEW_ANGLE, ASPECT, NEAR, FAR);
-			camera.position.z = 200;
-			scene.add(camera);
-
-			// Set up the camera controls
-			var cameraControls = new THREE.OrbitControls(camera, renderer.domElement);
-			cameraControls.autoRotate = true;
-
-			// Start the renderer
-			renderer.setSize(WIDTH, HEIGHT);
-			container.appendChild(renderer.domElement);
-
-			// Initialize geometry, materials, and textures for Earth and Moon
-			var earthGeometry = new THREE.SphereGeometry(30, 32, 32);
-			var earthTexture = new THREE.TextureLoader().load(
-				"https://upload.wikimedia.org/wikipedia/commons/thumb/9/97/The_Earth_seen_from_Apollo_17.jpg/300px-The_Earth_seen_from_Apollo_17.jpg"
-			);
-			var earthMaterial = new THREE.MeshPhongMaterial({ map: earthTexture });
-			var earth = new THREE.Mesh(earthGeometry, earthMaterial);
-			earth.position.set(0, 0, 0);
-			scene.add(earth);
-
-			var moonGeometry = new THREE.SphereGeometry(10, 32, 32);
-			var moonTexture = new THREE.TextureLoader().load(
-				"https://upload.wikimedia.org/wikipedia/commons/thumb/e/e1/FullMoon2010.jpg/280px-FullMoon2010.jpg"
-			);
-			var moonMaterial = new THREE.MeshPhongMaterial({ map: moonTexture });
-			var moon = new THREE.Mesh(moonGeometry, moonMaterial);
-			moon.position.set(50, 0, 0);
-			scene.add(moon);
-
-			// Add a light source to simulate day/night on Earth
-			var light = new THREE.PointLight(0xffffff, 1, 1000);
-			light.position.set(100, 0, 0);
-			scene.add(light);
-
-			// Animation variables
-			var moonOrbitRadius = 50;
-			var moonOrbitSpeed = 0.01;
-			var moonRotationSpeed = 0.05;
-			var earthRotationSpeed = 0.01;
-			var moonAngle = 0;
-
-			// Define the render function
-			function render() {
-				cameraControls.update(); // Update camera controls
-				renderer.render(scene, camera); // Render the scene
-			}
-
-			// Animate the scene
-			function animate() {
-				requestAnimationFrame(animate);
-
-				// Rotate the Earth
-				earth.rotation.y += earthRotationSpeed;
-
-				// Update Moon's position and rotation
-				moonAngle += moonOrbitSpeed;
-				moon.position.set(
-					moonOrbitRadius * Math.cos(moonAngle),
-					0,
-					moonOrbitRadius * Math.sin(moonAngle)
+				// Scene, camera, and renderer setup
+				const scene = new THREE.Scene();
+				const camera = new THREE.PerspectiveCamera(
+					75,
+					window.innerWidth / window.innerHeight,
+					0.1,
+					1000
 				);
-				moon.rotation.y += moonRotationSpeed;
+				const renderer = new THREE.WebGLRenderer();
+				renderer.setSize(window.innerWidth, window.innerHeight);
+				container.appendChild(renderer.domElement);
 
-				// Render the scene
-				render();
+				// Grid helper for reference
+				const gridHelper = new THREE.GridHelper(20, 40);
+				scene.add(gridHelper);
+
+				// Light setup
+				const light = new THREE.PointLight(0xffffff, 1, 100);
+				light.position.set(10, 10, 10);
+				scene.add(light);
+
+				const ambientLight = new THREE.AmbientLight(0x404040);
+				scene.add(ambientLight);
+
+				// Parametric function (cone shape or hyperbolic paraboloid)
+				const parametricFunction = (u, v, target) => {
+					const x = u * 10 - 5; // Scale u to [-5, 5]
+					const y = v * 10 - 5; // Scale v to [-5, 5]
+					const z = x * x - y * y; // Change to x * x + y * y for a cone
+					target.set(x, y, z);
+				};
+
+				// Geometry and material
+				const geometry = new THREE.ParametricGeometry(
+					parametricFunction,
+					100,
+					100
+				);
+				const material = new THREE.MeshStandardMaterial({
+					color: 0x0077ff,
+					wireframe: true,
+				});
+
+				// Mesh creation and addition to the scene
+				const mesh = new THREE.Mesh(geometry, material);
+				scene.add(mesh);
+
+				// Camera position
+				camera.position.set(10, 10, 10);
+				camera.lookAt(0, 0, 0);
+
+				// Animation loop
+				function animate() {
+					requestAnimationFrame(animate);
+					mesh.rotation.y += 0.01;
+					renderer.render(scene, camera);
+				}
+
+				animate();
 			}
 
-			animate();
+			// Initialize the 3D grapher
+			init();
 		</script>
 	</body>
 </html>
